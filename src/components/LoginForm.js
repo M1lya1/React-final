@@ -58,7 +58,7 @@ const LoginForm = ({onLogin}) => {
             
     
             <Form.Item>
-            {/* <Link to='/'> */}
+            
                 <Button type="primary" 
                         htmlType="submit" 
                         className="login-form-button" 
@@ -66,7 +66,7 @@ const LoginForm = ({onLogin}) => {
                         >
                     Log in
                 </Button>
-                {/* </Link> */}
+            
             Or <Link to="/Registration">register now!</Link>
             </Form.Item>
         </Form>

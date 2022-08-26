@@ -4,7 +4,7 @@ import { history } from '../../App';
 
 
 const actionCreateCard = (Ad) => async (dispatch) => {
-	const gqlQuery = `mutation addCom($Ad:AdInput){
+	const gqlQuery = `mutation addComment($Ad:AdInput){
 	        		AdUpsert(ad: $Ad){_id}
 					}`;
 	const gqlPromise = gql(gqlQuery, { Ad });
@@ -12,7 +12,7 @@ const actionCreateCard = (Ad) => async (dispatch) => {
 	const result = await dispatch(action);
 	if (result) {
 		history.push(`/main/${result._id}`);
-		dispatch(actionFulfilled("Upload", []));
+		dispatch(actionFulfilled("isUpLoaded", []));
 	}
 };
 

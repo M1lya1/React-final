@@ -3,7 +3,6 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button,  Form, Input } from 'antd';
 import 'antd/dist/antd.css';
 import { useState } from 'react';
-import {Link} from 'react-router-dom'
 import {actionFullReg} from '../redux/actions/actions'
 import { connect } from 'react-redux'
 
@@ -12,11 +11,11 @@ const RegistrationForm = ({onRegistration}) => {
     const [password, setPassword] = useState('')
     const [samePassword, setSamePassword] = useState('')
   return (
-    <div>
+    
          <div className="form">
             <Form
             
-            className="login-form"
+            className="login-form registration"
             initialValues={{
             remember: true,
             }}
@@ -46,7 +45,7 @@ const RegistrationForm = ({onRegistration}) => {
                 },
             ]}
             >
-            <Input prefix={<UserOutlined className="site-form-item-icon" />} 
+            <Input prefix={<LockOutlined className="site-form-item-icon" />} 
                     type="password"
                     placeholder="Confirm password" 
                     value={password}
@@ -73,7 +72,7 @@ const RegistrationForm = ({onRegistration}) => {
             
     
             <Form.Item>
-            {/* <Link to="/Home"> */}
+            
                 <Button type="primary" 
                         htmlType="submit" 
                         className="login-form-button" 
@@ -86,7 +85,7 @@ const RegistrationForm = ({onRegistration}) => {
             </Form.Item>
         </Form>
       </div>
-    </div>
+    
   )
 }
 

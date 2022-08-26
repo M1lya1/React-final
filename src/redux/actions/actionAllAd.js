@@ -1,7 +1,12 @@
 import gql from "../GQL"
 import { actionPromise } from "./actions";
 
-const actionAllAd = () => async (dispatch) => {
+const actionAllAd = (search) => async (dispatch, getState) => {
+
+    const oldState = getState().promise?.allAd?.payload || [];
+    const skip = oldState.length;
+
+
     const gqlQuery = `
     query allAd($query:String){
             AdFind(query: $query){
@@ -13,14 +18,20 @@ const actionAllAd = () => async (dispatch) => {
             }
         }`;
 
-        const gqlPromise = await gql(gqlQuery, {query: JSON.stringify([{}])});
-        const action = actionPromise('AllAd', gqlPromise)
+        const newAd = await gql(gqlQuery, {query: JSON.stringify([
+                        search ? {$or: [{ title: `/${search}/` }, { description: `/${search}/` }] } : {},
+                        {sort: [{ _id: 1 }], skip: [skip],}
+                    ])
+                });
+        const action = actionPromise('AllAd', [...oldState, ...newAd])
           dispatch(action)
         
         
 }
 
-
-export default actionAllAd
+const actionClearAd = () => (dispatch) => {
+	dispatch(actionPromise("AllAd", []));
+};
+export  {actionAllAd, actionClearAd}
 
      

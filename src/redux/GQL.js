@@ -1,4 +1,5 @@
-export const URL = `http://marketplace.node.ed.asmer.org.ua/`
+export const URL = `http://marketplace.node.ed.asmer.org.ua/`;
+export const uploadURL = `${URL}upload`;
 
 const getGQL = url =>
     (query, variables = {}) =>

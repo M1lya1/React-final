@@ -9,7 +9,7 @@ const actionUser = (_id) => async (dispatch) => {
         `query userFindOne($query:String!){
             UserFindOne(query:$query){
                 _id createdAt login nick avatar{url} 
-            }
+            }   
         }`
 
         const gqlPromise =  await gql(gqlQuery, {query: JSON.stringify([{_id}])});

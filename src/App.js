@@ -15,7 +15,7 @@ import { createBrowserHistory } from "history";
 
 
 
-export const history = createBrowserHistory();
+ const history = createBrowserHistory();
 
 store.subscribe(() => console.log(store.getState()))
 function App() {
@@ -44,4 +44,4 @@ function App() {
   );
 }
 
-export default App;
+export  {App, history};

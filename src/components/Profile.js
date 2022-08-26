@@ -9,31 +9,34 @@ import { Link } from 'react-router-dom';
 
 const Profile = ({user , onLogout}) => {
 
-    const {avatar, login, nick} = user
+    const { avatar, login, nick} = user
 
   return (
-    <div>
+    <div className='profile'>
       
       {avatar ?  <Avatar
             src={
                 <Image
                 src={`http://marketplace.node.ed.asmer.org.ua/${avatar.url}`}
                 style={{
-                    width: 60,
+                    width: 40
+                  
                 }}
                 />
             }
             />
-           : [] }
-        <p>Name: {login}</p>
+           : 'avatar not found' }
+        <p className='profile__name'>Name: {login}</p>
         
-        <p>Username: {!!nick ? nick : null}</p>
-        <Link to={"/profile/edit"}> <button></button></Link>
-        <button onClick={() => onLogout()}>Log out</button>
+        <p className='profile__username'>Username: {!!nick ? nick : null}</p>
+        <Link to={"/profile/edit"}> 
+             <button className='profile__btn' >Edit profile</button>
+        </Link>
+        <button className='profile__btn' onClick={() => onLogout()}>Log out</button>
     </div>
   )
 }
 
-const CProfile = connect(state => ({user: state?.aboutMe?.payload}),{onLogout: actionAuthLogout})(Profile)
+const CProfile = connect(state => ({user: state.promise?.aboutMe?.payload}),{onLogout: actionAuthLogout})(Profile)
 
 export default CProfile

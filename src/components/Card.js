@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Carousel } from 'antd';
 import { Link } from 'react-router-dom';
 const contentStyle = {
-  height: '175px',
+  height: '250px',
   color: '#fff',
   lineHeight: '160px',
   textAlign: 'center',
@@ -11,34 +11,39 @@ const contentStyle = {
 
 
 
-const Card = ({cat}) => {
+const Card = ({cat: {_id, images, tags, title, price}}) => {
  
   return (
-    <Link to={`/main/${cat._id}`}>
+    
     <div className='card'>
-        {cat.images ? (
+        <Link to={`/main/${_id}`} style={{ textDecoration: 'none', color:'inherit'}}>
+        {!!images  ? (
         <Carousel >
-           {cat.images.map(image =>  <div>
-                <img src={`http://marketplace.node.ed.asmer.org.ua/${image.url}`} key={cat._id} style={contentStyle}/>
+           {images.map(image =>  <div>
+                <img src={`http://marketplace.node.ed.asmer.org.ua/${image.url}`} key={image._id || Math.random()} style={contentStyle}/>
             </div>) 
 }
             
         </Carousel>
-) : <p>[]</p>}
+        
+) : <div className='card__noimage'>NO IMAGE</div>}
+      
+        
+        
         <div className='card__title'>
-           { cat.title ? <p>title: {cat.title}</p> : <p>no title</p>}
+           { title ? <p> {title}</p> : <p>no title</p>}
         </div>
+        
         <div className='card__tag'>
-           { cat.tags ?  cat.tags.map(tag => <p key={Math.random()}>tag: {tag},</p>) : <p></p>}
+          Tag: { tags ?  tags.map(tag => <p key={Math.random()}> {tag}</p>) : <p></p>}
         </div>
-        <div className='card__date'>
-            <p>date</p>
-        </div>
+        
         <div className='card__price'>
-            {cat.price ? <p>Price: {cat.price}</p> : <p>[]</p>}
+            {price ? <p>Price: {price}</p> : <p>[]</p>}
         </div>
+        </Link>
     </div>
-    </Link>
+    
   )
 }
 

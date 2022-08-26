@@ -1,11 +1,17 @@
 import AddComment from "./AddComment";
 import React from "react";
 import { useEffect } from "react";
-import connect from 'react-redux'
+import {connect} from 'react-redux'
 import {actionComment} from '../redux/actions/actionAddComent'
+import sortComments from "../redux/actions/sortComment";
+import { Typography, Box, IconButton, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import ReplyIcon from "@mui/icons-material/Reply";
+import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Container } from "@mui/system";
 
 
-const Comment = ({ comment: { _id, owner, createdAt, text, props, answerTo, answers } }) => {
+const Comment = ({ comment: { _id, owner, createdAt, text, ad, answerTo, answers } }) => {
 	
 	const date = new Date(+createdAt)
     const user = (owner) => {
@@ -13,18 +19,46 @@ const Comment = ({ comment: { _id, owner, createdAt, text, props, answerTo, answ
 
 		return owner.login;
 	}
-    return <div>
-       <div> Comment: {userName}{" "}
+	const userName = user(owner)
+    // return <div>
+    //    <div> Comment: {userName}{" "}
+	// 				{date.toLocaleString("ru-RU", {
+	// 					year: "numeric",
+	// 					month: "long",
+	// 					day: "numeric",
+	// 				})}
+    //     </div>
+    //     {<AddComment props={props} answerTo={{ _id }}/>}
+    //     {answers}
+    // </div>
+	return (
+		<Container sx={{ borderBottom: "2px solid #1178cc" }}>
+			<Box>
+				<Typography variant="subtitle2" color="text.secondary">
+					Прокоментировано: {userName}{" "}
 					{date.toLocaleString("ru-RU", {
 						year: "numeric",
 						month: "long",
 						day: "numeric",
 					})}
-        </div>
-        {<AddComment props={props} answerTo={{ _id }}/>}
-        {answers}
-    </div>
+				</Typography>
+			</Box>
+			<Box sx={{ position: "relative" }}>
+				<Typography sx={{ textDecoration: "none" }} gutterBottom variant="subtitle1" component="p">
+					{text}
+				</Typography>
+				<Box sx={{ position: "absolute", right: "0", top: " 0" }}>
+					
+						
+					 
+					
+				</Box>
+			</Box>
 
+			 <AddComment ad={ad} answerTo={{ _id: _id }}  />
+			
+		</Container>
+	)
 }
 
 const Comments = ({ comments }) => {
@@ -39,6 +73,6 @@ const Comm = ({ _id, onIdChange, comments }) => {
 	return comments ? <Comments comments={comments} /> : <></>;
 };
 
-const CComment = connect(state => ({comments: state?.promise?.Comment?.payload?.comments}, {onIdChange: actionComment}))(Comm)
+const CComment = connect(state => ({comments: state?.promise?.getComments?.payload?.comments}), {onIdChange: actionComment})(Comm)
 
 export default CComment

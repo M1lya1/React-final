@@ -6,19 +6,21 @@ import CLoginForm from "./LoginForm";
 import CRegistrationForm from "./Registration";
 import {CEditCard, CCreateCard} from './CreateCard'
 import CProfileEdit from "./ProfileEdit";
+import CSearchPage from "./SeachPage";
 
 
 const AuthElement = () => (<Switch>
-          <Route path='/profile' component={CProfile}/>
-          <Route path='/profile/:_id' component={CProfileEdit}/>
+          <Route exact path='/profile' component={CProfile}/>
+          <Route exact path='/main' component={CContainer}/>
           <Route path='/createCard' component={CCreateCard}/>
-          <Route path='/editCard/:id' component={CEditCard}/>
-          <Route path='/main' component={CContainer}/>
-          <Route path='/main/:_id' component={CCardPage}/>
+          <Route exact path="/editCard/:_id" component={CEditCard}/>
+		  <Route path="/search/:search" component={CSearchPage}/>
+          <Route path="/main/:_id" component={CCardPage}/>
+          <Route path="/profile/edit" component={CProfileEdit}/>
 		  <Redirect from='/' to='/main'/>
 </Switch>)
 
-const PrivateRoute = ({ element: Element, ...rest }) => {
+const PrivateRoute = ({ component: Element, ...rest }) => {
 	const isUser = !!localStorage.authToken;
 	return (
 		
@@ -26,7 +28,7 @@ const PrivateRoute = ({ element: Element, ...rest }) => {
 			{...rest}
 			render={({props}) =>
 				isUser ? (
-					<Element  />
+					<Element  {...props}/>
 				) : (
 					<Redirect
 						to={{
@@ -43,7 +45,7 @@ const PrivateRoute = ({ element: Element, ...rest }) => {
 const Content = () => <Switch>
     <Route path='/login' component={CLoginForm}/>
     <Route path='/Registration' component={CRegistrationForm}/>
-    <PrivateRoute element={AuthElement} path='/'/>
+    <PrivateRoute  path='/' component={AuthElement}/>
 </Switch>
 
 export default Content
