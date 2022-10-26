@@ -3,16 +3,20 @@ import Button from "antd/lib/button";
 import { useState } from "react";
 import { history } from "../App";
 
+
 const SearchElement = () => {
+	
     const [search, setSearch] = useState("");
 	const tryToSearch = () => {
 		const noSpace = search.replaceAll(" ", "");
 		if (!search || noSpace === "") {
 			setSearch("");
 			return history.push("/main");
+			
 		}
 
 		history.push(`/search/${search}`);
+		
 		setSearch("");
 	}
 

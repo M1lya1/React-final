@@ -1,15 +1,19 @@
 import Input from 'antd/lib/input/Input'
 import Button from 'antd/lib/button'
 import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import {  useDispatch, useSelector } from 'react-redux'
 import actionCreateCard from '../redux/actions/actionCreateCard'
-import { history } from '../App'
 import CImgAdd from './ImgAdd'
 import actionAdById from '../redux/actions/actionAdFind'
+import Loading from './Loading'
 import { clearUploadImg } from '../redux/actions/actionUpload'
 
 
-const CreateCard = ({onCreateCard, clearImg, props={}}) => {
+
+
+const CreateCard = ({  props={}}) => {
+  const dispatch = useDispatch()
+
     const {_id, images, title, description, tags, address, price} = props
     const [isTitle, setIsTitle] = useState(title || '')
     const [isTags, setIsTags] = useState(tags || '')
@@ -19,11 +23,17 @@ const CreateCard = ({onCreateCard, clearImg, props={}}) => {
     const [isPrice, setIsPrice] = useState(price || '')
 
    
-    const onImages = (imagesData) => {
-      if (!!imagesData) {
-        setIsImages(imagesData);
+    const onImages = (images) => {
+      if (!!images) {
+        setIsImages(images);
       }
-    };
+    }
+
+    useEffect(() => {
+      return () => {
+        dispatch(clearUploadImg());
+      };
+    }, [dispatch]);
 
     const createCard = () => {
       const images = [];
@@ -33,7 +43,8 @@ const CreateCard = ({onCreateCard, clearImg, props={}}) => {
           images.push(imgId);
         }
       }
-      const result = {
+ 
+      const Ad = {
         ...(_id ? { _id: _id } : {}),
         ...(images.length ? { images: images } : {}),
         tags: isTags,
@@ -42,8 +53,9 @@ const CreateCard = ({onCreateCard, clearImg, props={}}) => {
         price: +isPrice,
         ...(isAddress.length !== 0 ? { address: isAddress } : {}),
       };
-      console.log(result);
-      onCreateCard(result);
+      
+      
+      dispatch(actionCreateCard(Ad));
     }
 
    
@@ -51,9 +63,12 @@ const CreateCard = ({onCreateCard, clearImg, props={}}) => {
 
   return (
     <div className='create'>
-        <h3 className='create__title'>Create new card</h3>
+        <h3 className='create__title'>{_id ? "Edit card" : "Create new card"}</h3>
         <div className='create__img'>
+          {isImages.map(img => <div>{img.name}</div>)}
           <CImgAdd images={images || []} onImages={onImages}/>
+        
+          
         </div>
         <div className='create__input'>
         <Input type='text' placeholder='title' value={isTitle} onChange={(e) => setIsTitle(e.target.value)}/>
@@ -69,17 +84,18 @@ const CreateCard = ({onCreateCard, clearImg, props={}}) => {
 }
 
 
-const CCreateCard = connect(null,{onCreateCard: actionCreateCard, clearImg: clearUploadImg })(CreateCard)
 
-const EditCard = ({match: {params: {_id}}, onIdChange, props, myId}) => {
+
+const EditCard = ({match: {params: {_id}}}) => {
+  const props = useSelector(state => state.promise?.AdById?.payload)
+  const dispatch = useDispatch()
   useEffect(() => {
-		onIdChange(_id);
-	}, [_id,onIdChange])
-
+		dispatch(actionAdById(_id))
+	}, [_id,dispatch])
  
-	return  <CreateCard props={props} /> ;
+	return props ? <CreateCard  props={props} /> : <Loading/>;
 }
 
-const CEditCard = connect(state => ({props: state.promise?.AdById?.payload, myId: state.aboutMe?.payload?._id}),{onIdChange: actionAdById})(EditCard)
-export  {CEditCard, CCreateCard}
+
+export  {EditCard, CreateCard}
 

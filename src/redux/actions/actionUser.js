@@ -15,7 +15,7 @@ const actionUser = (_id) => async (dispatch) => {
         const gqlPromise =  await gql(gqlQuery, {query: JSON.stringify([{_id}])});
         const action = actionPromise('aboutMe', gqlPromise)
         const result = await dispatch(action)
-        console.log(result);
+      
 
         
 }

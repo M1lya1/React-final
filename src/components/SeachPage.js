@@ -1,42 +1,35 @@
 import { useEffect } from "react"
 import Card from "./Card";
 import {actionAllAd, actionClearAd} from '../redux/actions/actionAllAd'
-import {connect} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
+import Loading from "./Loading";
+import { useParams } from "react-router-dom";
 
 
 
-const SearchPage = ({match: {params: {search}}, onSearch, removeAd, categories, status}) => {
-    useEffect(() => {
-        onSearch(search);
+const SearchPage = ({match: {params: {search}}}) => {
+  //  const search = useParams()
+  
+  const categories = useSelector(state => state?.promise?.AllAd?.payload)
+  const status = useSelector(state => state?.promise?.AllAd?.status)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+        dispatch(actionAllAd(search));
 		return function clear() {
-			removeAd();
+			dispatch(actionClearAd());
 		}
-    },[search])
-    useEffect(() => {
-		window.onscroll = function () {
-			if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
-				onSearch(search);
-			}
-		};
-
-		return () => {
-			window.onscroll = 0;
-			removeAd();
-		};
-	}, []);
+    },[search, dispatch])
+   
 
     return <>
     
     <div className='container'>
-      {status === "FULFILLED" ? categories.map((cat => <Card cat={cat} key={cat._id}/>)) : <p>loading</p>}
+      {status === "FULFILLED" ? categories.map((cat => <Card cat={cat} key={cat._id}/>)) : <Loading/>}
     </div>
     
     </>
 }
 
-const CSearchPage = connect(state => ({categories: state?.promise?.AllAd?.payload, status: state?.promise?.AllAd?.status}),
-            {onSearch: actionAllAd,
-            removeAd: actionClearAd}
-            )(SearchPage)
 
-export default CSearchPage
+export default SearchPage

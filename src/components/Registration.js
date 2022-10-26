@@ -4,9 +4,10 @@ import { Button,  Form, Input } from 'antd';
 import 'antd/dist/antd.css';
 import { useState } from 'react';
 import {actionFullReg} from '../redux/actions/actions'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
-const RegistrationForm = ({onRegistration}) => {
+const RegistrationForm = () => {
+    const dispatch = useDispatch()
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
     const [samePassword, setSamePassword] = useState('')
@@ -76,7 +77,7 @@ const RegistrationForm = ({onRegistration}) => {
                 <Button type="primary" 
                         htmlType="submit" 
                         className="login-form-button" 
-                        onClick={() => onRegistration(login, password)}
+                        onClick={() => dispatch(actionFullReg(login, password))}
                         >
                     Sign up
                 </Button>
@@ -89,6 +90,6 @@ const RegistrationForm = ({onRegistration}) => {
   )
 }
 
-const CRegistrationForm = connect(null, {onRegistration: actionFullReg})(RegistrationForm)
 
-export default CRegistrationForm
+
+export default RegistrationForm

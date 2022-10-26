@@ -1,12 +1,12 @@
 import gql from "../GQL"
 import { actionPromise } from "./actions";
-import actionUser from "./actionUser";
 import { history } from "../../App";
 
 
 
 
 const actionUserUpdate = (user) => async (dispatch) => {
+   
     const gqlQuery = `mutation userUpdate($user:UserInput){
         UserUpsert(user: $user){
             _id
@@ -17,9 +17,10 @@ const actionUserUpdate = (user) => async (dispatch) => {
                 }
                 }`
     const gqlPromise = gql(gqlQuery, {user});
-    const action = actionPromise('userInfo', gqlPromise);
+    const action = actionPromise('aboutMe', gqlPromise);
      await dispatch(action);
      history.push("/profile");
+    
 }
 
 export default actionUserUpdate

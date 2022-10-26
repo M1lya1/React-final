@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Carousel } from 'antd';
 import { Link } from 'react-router-dom';
 const contentStyle = {
@@ -20,7 +20,7 @@ const Card = ({cat: {_id, images, tags, title, price}}) => {
         {!!images  ? (
         <Carousel >
            {images.map(image =>  <div>
-                <img src={`http://marketplace.node.ed.asmer.org.ua/${image.url}`} key={image._id || Math.random()} style={contentStyle}/>
+                <img src={`http://marketplace.node.ed.asmer.org.ua/${image.url}`} key={image._id || Math.random()} style={contentStyle} alt='img'/>
             </div>) 
 }
             
@@ -35,11 +35,11 @@ const Card = ({cat: {_id, images, tags, title, price}}) => {
         </div>
         
         <div className='card__tag'>
-          Tag: { tags ?  tags.map(tag => <p key={Math.random()}> {tag}</p>) : <p></p>}
+          Category: { tags ?  tags.map(tag => <p key={Math.random()}> {tag}</p>) : <p></p>}
         </div>
         
         <div className='card__price'>
-            {price ? <p>Price: {price}</p> : <p>[]</p>}
+            {price ? <p>${price}</p> : <p></p>}
         </div>
         </Link>
     </div>

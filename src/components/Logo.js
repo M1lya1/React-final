@@ -2,7 +2,9 @@ import React from 'react'
 
 const Logo = () => {
   return (
-    <div className='logo'>New Marketplace</div>
+    <div className='logo'>
+    
+    </div>
   )
 }
 

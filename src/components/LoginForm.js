@@ -1,15 +1,16 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import 'antd/dist/antd.css';
 import { useState } from 'react';
 import {Link} from 'react-router-dom'
 import {actionFullLogin} from '../redux/actions/actions'
-import { connect } from 'react-redux'
-import {BrowserRouter as Redirect } from 'react-router-dom';
+import {  useDispatch } from 'react-redux'
 
 
 
-const LoginForm = ({onLogin}) => {
+
+const LoginForm = () => {
+    const dispatch = useDispatch()
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
     
@@ -62,7 +63,7 @@ const LoginForm = ({onLogin}) => {
                 <Button type="primary" 
                         htmlType="submit" 
                         className="login-form-button" 
-                        onClick={() => onLogin(login, password)}
+                        onClick={() => dispatch(actionFullLogin(login, password))}
                         >
                     Log in
                 </Button>
@@ -74,6 +75,6 @@ const LoginForm = ({onLogin}) => {
     );
   };
 
-  const CLoginForm = connect(null, {onLogin: actionFullLogin})(LoginForm)
+  
 
-export default CLoginForm;
+export default LoginForm;

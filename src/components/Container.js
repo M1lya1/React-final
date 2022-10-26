@@ -1,35 +1,53 @@
 import React, {useEffect} from 'react'
 import {actionAllAd, actionClearAd} from '../redux/actions/actionAllAd'
-import store from '../redux/store/store'
 import Card from './Card'
-import {connect} from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector} from 'react-redux'
+import Loading from './Loading'
+import { BackTop } from 'antd';
 
 
 
-const Container = ({categories, status, onIdChange, removeAd}) => {
+
+
+const Container = () => {
   
+  const categories = useSelector(state => state.promise?.AllAd?.payload)
+  const status = useSelector(state => state.promise?.AllAd?.status)
+  const dispatch = useDispatch()
+
   useEffect(() => {
-		window.onscroll = function () {
+    window.onscroll = function () {
 			if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 150) {
-				onIdChange();
+				dispatch(actionAllAd())
 			}
-		};
-		onIdChange();
-
-		return () => {
+		}
+    dispatch(actionAllAd())
+    return () => {
 			window.onscroll = 0;
-			removeAd();
-		};
-	}, []);
-
+			dispatch(actionClearAd())
+		}
+  }, [dispatch])
+  
+  const style = {
+    height: 40,
+    width: 40,
+    lineHeight: '40px',
+    borderRadius: 4,
+    backgroundColor: '#1088e9',
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 14,
+  };
   
   return (
     <div className='container'>
-      {status === "FULFILLED" ? categories.map((cat => <Card cat={cat} key={cat._id}/>)) : <p>loading</p>}
+      
+      {categories ? categories.map((cat => <Card cat={cat} key={cat._id}/>)) : <Loading/>}
+      <BackTop>
+       <div style={style}>UP</div>
+      </BackTop>
     </div>
   )
 }
-const CContainer = connect(state => ({categories: state?.promise?.AllAd?.payload, status: state?.promise?.AllAd?.status}),
-        {onIdChange: actionAllAd, removeAd: actionClearAd})(Container)
-export default CContainer
+
+export default Container

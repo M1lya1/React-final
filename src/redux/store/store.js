@@ -8,4 +8,5 @@ const combinedReducers = combineReducers({
 });
 
 const store = createStore(combinedReducers, applyMiddleware(thunk));
+
 export default store;

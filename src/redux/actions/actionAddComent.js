@@ -20,17 +20,9 @@ const actionComment = (_id) => async (dispatch) => {
 
 	const action = actionPromise("getComments", queryPromise);
 	await dispatch(action);
+	
 };
 
-// const actionAddComment = (comment) => async (dispatch) => {
-// 	const gqlQuery = `mutation addComment($comment:CommentInput){
-// 	        		CommentUpsert(comment: $comment){_id ad{_id}}
-// 					}`;
-// 	const gqlPromise = gql(gqlQuery, { comment });
-// 	const action = actionPromise("AddComment", gqlPromise);
-// 	const result = await dispatch(action);
-// 	await dispatch(actionComment(result.Comment._id));
-// };
 const actionAddComment = (comment) => async (dispatch) => {
 	const gqlQuery = `mutation addComment($comment:CommentInput){
 	        		CommentUpsert(comment: $comment){_id ad{_id}}
@@ -38,7 +30,7 @@ const actionAddComment = (comment) => async (dispatch) => {
 	const gqlPromise = gql(gqlQuery, { comment });
 	const action = actionPromise("CommentAdd", gqlPromise);
 	const result = await dispatch(action);
-	console.log(result);
+	
 	await dispatch(actionComment(result.ad._id));
 				}
 export {actionAddComment, actionComment}

@@ -36,10 +36,11 @@ const actionPromise = (name, promise) =>
 
 const actionAuthLogout = () => 
     (dispatch) => {        
+        
         dispatch({type: 'AUTH_LOGOUT'})
         localStorage.removeItem('authToken')
         history.push("/login");
-        
+       
     }
 
 const actionFullLogin = (login, password) =>
@@ -55,6 +56,7 @@ const actionFullLogin = (login, password) =>
         dispatch(actionAuthLogin(result))
         if (result) {
             history.push("/main");
+            
         }
         
     }
@@ -69,7 +71,7 @@ const actionFullReg = (login, password) =>
         const gqlPromise = gql(gqlQuery, {login, password})
         const action     = actionPromise('register', gqlPromise) 
         const result     = await dispatch(action)
-        console.log(result);
+        
         if (result) await dispatch(actionFullLogin(login, password))
       
 }

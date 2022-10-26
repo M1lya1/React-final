@@ -1,78 +1,104 @@
 import AddComment from "./AddComment";
 import React from "react";
 import { useEffect } from "react";
-import {connect} from 'react-redux'
-import {actionComment} from '../redux/actions/actionAddComent'
+import { useSelector, useDispatch} from 'react-redux'
+import { actionComment} from '../redux/actions/actionAddComent'
 import sortComments from "../redux/actions/sortComment";
-import { Typography, Box, IconButton, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
-import ReplyIcon from "@mui/icons-material/Reply";
-import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Container } from "@mui/system";
+import 'antd/dist/antd.css'
+import {  Input } from 'antd';
+import  { useState } from 'react';
+import { CaretRightOutlined } from '@ant-design/icons';
+import { Collapse } from 'antd'
 
 
-const Comment = ({ comment: { _id, owner, createdAt, text, ad, answerTo, answers } }) => {
-	
+const { Panel } = Collapse;
+const { TextArea } = Input;
+
+const Answers = ({answers}) => {
+
+
+	return (<Collapse
+		bordered={false}
+		defaultActiveKey={['1']}
+		expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+		className="site-collapse-custom-collapse"
+	  >
+		<Panel header={'answers ' + ' ' + answers.length}>
+		{answers.map(answer => <Comments comment={answer} key={answer._id}/>)}
+		</Panel>
+		</Collapse>
+		
+)}
+
+const Comments = ({comment}) => {
+	const {_id, owner, createdAt, text, ad, answerTo, answers} = comment
+
+	const [show, setShow] = useState(false)
+
 	const date = new Date(+createdAt)
-    const user = (owner) => {
-		if (owner?.nick) return owner.nick;
 
-		return owner.login;
+	const user = (owner) => {
+				if (owner?.nick) return owner.nick;
+		
+				return owner.login;
+			}
+			const userName = user(owner)
+
+	const addCom = () => {
+		if(show === true) {setShow(false)} else setShow(true)
+		
 	}
-	const userName = user(owner)
-    // return <div>
-    //    <div> Comment: {userName}{" "}
-	// 				{date.toLocaleString("ru-RU", {
-	// 					year: "numeric",
-	// 					month: "long",
-	// 					day: "numeric",
-	// 				})}
-    //     </div>
-    //     {<AddComment props={props} answerTo={{ _id }}/>}
-    //     {answers}
-    // </div>
 	return (
-		<Container sx={{ borderBottom: "2px solid #1178cc" }}>
-			<Box>
-				<Typography variant="subtitle2" color="text.secondary">
-					Прокоментировано: {userName}{" "}
-					{date.toLocaleString("ru-RU", {
+		<>
+		<div className="comment__container">
+		<div className="comment">
+			<div className="comment__info">
+				<div className="comment__user">
+					<p>comment by {userName}</p>
+				</div>
+				<div className="comment__date">
+					<p>{date.toLocaleString("ru-RU", {
 						year: "numeric",
 						month: "long",
 						day: "numeric",
-					})}
-				</Typography>
-			</Box>
-			<Box sx={{ position: "relative" }}>
-				<Typography sx={{ textDecoration: "none" }} gutterBottom variant="subtitle1" component="p">
-					{text}
-				</Typography>
-				<Box sx={{ position: "absolute", right: "0", top: " 0" }}>
-					
-						
-					 
-					
-				</Box>
-			</Box>
-
-			 <AddComment ad={ad} answerTo={{ _id: _id }}  />
-			
-		</Container>
+					})}</p>
+				</div>
+			</div>
+			<div className="comment__text">
+				{text ? <p>{text}</p> : "no text"}
+			</div>
+			<div className='comment__reply' onClick={addCom}>reply to</div>
+		</div>
+		{show && <AddComment ad={ad} answerTo={{ _id: _id }}/>}
+		{!!answers ? <Answers  answers={answers}/> : null}
+		</div>
+		</>
+		
+		
 	)
 }
 
-const Comments = ({ comments }) => {
-	const commentsTree = sortComments(comments);
-	return <>{!!commentsTree && commentsTree.map((comment) => <Comment comment={comment} key={comment._id} />)}</>;
+
+const CommentsAll = ({comments}) => {
+		const commentsTree = sortComments(comments)
+		
+		return <>
+			{!!commentsTree && commentsTree.map(comment => <Comments comment={comment} key={comment._id}/>)  }
+		</>
+}
+const CommentsRender = ({ _id}) => {
+
+  
+  const comments = useSelector(state => state?.promise?.getComments?.payload?.comments)
+  const dispatch = useDispatch()  
+  useEffect(() => {
+	dispatch(actionComment(_id))
+  },[_id, dispatch])
+  return (
+    <>
+	{comments && <CommentsAll comments={comments}/>}
+    </>
+  );
 };
 
-const Comm = ({ _id, onIdChange, comments }) => {
-	useEffect(() => {
-		onIdChange(_id);
-	}, [_id, onIdChange]);
-	return comments ? <Comments comments={comments} /> : <></>;
-};
-
-const CComment = connect(state => ({comments: state?.promise?.getComments?.payload?.comments}), {onIdChange: actionComment})(Comm)
-
-export default CComment
+export default CommentsRender;

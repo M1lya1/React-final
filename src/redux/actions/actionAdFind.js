@@ -16,6 +16,7 @@ const actionAdById = (_id) => async (dispatch) => {
             tags
             address
             price
+			comments{_id}
 		}
 	}`,
 		{ query: JSON.stringify([{ _id }]) }

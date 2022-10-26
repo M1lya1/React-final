@@ -32,4 +32,6 @@ function authReducer(state={}, {type, token}){
     }
     return state
 }
+
+
 export {promiseReducer, authReducer}

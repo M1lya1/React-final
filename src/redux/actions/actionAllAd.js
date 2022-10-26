@@ -1,9 +1,10 @@
 import gql from "../GQL"
-import { actionPromise } from "./actions";
+import { actionPromise} from "./actions";
+
 
 const actionAllAd = (search) => async (dispatch, getState) => {
 
-    const oldState = getState().promise?.allAd?.payload || [];
+    const oldState = getState().promise?.AllAd?.payload || [];
     const skip = oldState.length;
 
 
@@ -20,7 +21,10 @@ const actionAllAd = (search) => async (dispatch, getState) => {
 
         const newAd = await gql(gqlQuery, {query: JSON.stringify([
                         search ? {$or: [{ title: `/${search}/` }, { description: `/${search}/` }] } : {},
-                        {sort: [{ _id: 1 }], skip: [skip],}
+                        {sort: [{ _id: 1 }],
+                        skip: [skip],
+                        limit: [10],
+                     }
                     ])
                 });
         const action = actionPromise('AllAd', [...oldState, ...newAd])

@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Carousel } from 'antd';
-import { connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import actionAdById from '../redux/actions/actionAdFind'
 import AddComment from './AddComment';
-import CComment from './Comment';
-import {Card, Stack} from "@mui/material";
-
+import CommentsRender from './Comment';
+import {EditOutlined, EditFilled}  from '@ant-design/icons'
+import Loading from './Loading';
 const contentStyle = {
   height: '400px',
-  width: '100%',
+  width: 'auto',
   color: '#fff',
   lineHeight: '160px',
   textAlign: 'center',
@@ -27,21 +27,22 @@ const Page = ({ props: { _id, owner, images, createdAt, title, description, tags
    
   return (<div className='card__page'>
     <div className='card__page-container'>
-        {images ? (
+       <div className='card__page-carousel'> {images ? (
         <Carousel >
            {images.map(image =>  <div>
-                <img src={`http://marketplace.node.ed.asmer.org.ua/${image.url}`} key={image._id} style={contentStyle}/>
+                <img src={`http://marketplace.node.ed.asmer.org.ua/${image.url}`} key={image._id} style={contentStyle} alt='img'/>
             </div>) 
 }
             
         </Carousel>
         
-) : <p>[]</p>}
-       
-        <div> 
+) : <p>NO IMAGE</p>}
+       </div>
+        <div className='card__page-icon'> 
         {userId === ownerId ?
-        <Link to={`/editCard/${_id}`}>
-            <button className='edit__card'>edit card</button>
+        <Link to={`/editCard/${_id}`} >
+          
+          <EditFilled style={{fontSize: '25px'}}/>
             </Link>
 				 : <p> </p>}
         </div>
@@ -57,20 +58,16 @@ const Page = ({ props: { _id, owner, images, createdAt, title, description, tags
             <p> {title}</p>
         </div>
         <div className='card__page-description'>
-            <p>Description: {description}</p>
+            <p> {description}</p>
         </div>
         
-        {address ? <div className='card__page-contacts'>Address: {address}</div> : <></>}
+        {address ? <div className='card__page-contacts'> {address}</div> : <></>}
         <div className='card__page-price'>
-           <p> Price: ${price}</p>
+           <p> ${price}</p>
         </div>
        
-        <Card sx={{ mt: 1, pb: 2 }}>
 					<AddComment ad={{ _id: _id }} />
-					<Stack spacing={1}>
-						<CComment _id={_id} />
-					</Stack>
-				</Card>
+          <CommentsRender _id={_id} />
     </div>
     </div>
   )
@@ -81,18 +78,19 @@ const CardPage = ({
 	match: {
 		params: { _id },
 	},
-	onCardId,
-	props
 }) => {
-    console.log(_id);
+    
+    const props = useSelector(state => state.promise?.AdById?.payload)
+    
+    const dispatch = useDispatch()
     useEffect(() => {
-		onCardId(_id);
-	}, [_id, onCardId]);
+		dispatch(actionAdById(_id));
+	}, [_id, dispatch]);
     return <div>
-        {props ? <div> {!!props ? <Page props={props} /> : <p>oops</p>}</div> : <p>Loading</p>}
+        {props ? <div> {!!props ? <Page props={props} /> : <p>oops</p>}</div> : <Loading/>}
     </div>  
 }
 
-const CCardPage = connect((state) => ({props: state.promise?.AdById?.payload}), {onCardId: actionAdById})(CardPage)
 
-export default CCardPage
+
+export default CardPage

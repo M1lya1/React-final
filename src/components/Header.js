@@ -1,12 +1,13 @@
 import Logo from "./Logo";
-import { actionAuthLogout } from "../redux/actions/actions";
-import { connect } from "react-redux";
+import {  useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import SearchElement from "./SearchElement";
 
 
 
-const Header = ({user, onLogout}) => {
+const Header = () => {
+
+  const user = useSelector(state => state.auth?.payload?.sub)
   
     return( 
     <div className="header">
@@ -22,6 +23,5 @@ const Header = ({user, onLogout}) => {
   )}
 
   
-  const CHeader = connect(state => ({user: state.auth?.payload?.sub}),{onLogout: actionAuthLogout})(Header)
-
-  export default CHeader;
+  
+  export default Header;

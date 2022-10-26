@@ -2,13 +2,18 @@ import { useState, useEffect } from "react"
 import { URL } from "../redux/GQL"
 import Input from "antd/lib/input"
 import Button from "antd/lib/button"
-import { connect } from 'react-redux';
+import {  useDispatch, useSelector } from 'react-redux';
 import actionUserUpdate from "../redux/actions/actionUserUpdate";
 import Dropzone from "react-dropzone";
 import {actionUploadAvatar} from '../redux/actions/actionUpload'
+import {DeleteOutlined} from '@ant-design/icons' 
 
 
-const ProfileEdit = ({props,newAvatar, onAvatar,onUpdate}) => {
+const ProfileEdit = () => {
+	const props = useSelector(state => state.promise?.aboutMe?.payload)
+	const newAvatar = useSelector(state => state.promise?.isAvatar?.payload)
+	const dispatch = useDispatch()
+	
     const {_id,avatar, nick} = props
    
 	const [thisNick, setThisNick] = useState(nick || "");
@@ -34,15 +39,15 @@ const ProfileEdit = ({props,newAvatar, onAvatar,onUpdate}) => {
 			nick: thisNick,
 			...(image ? { avatar: image } : {}),
 		};
-		onUpdate(result);
+		dispatch(actionUserUpdate(result))
 	};
 
-    return <div>
-        <div>
+    return <div className="profile__edit">
+        <div className="profile__edit-drop">
 		<Dropzone
 						maxFiles={1}
 						onDrop={(acceptedFiles) => {
-							onAvatar(acceptedFiles);
+							dispatch(actionUploadAvatar(acceptedFiles));
 						}}
 					>
 						{({ getRootProps, getInputProps }) => (
@@ -57,7 +62,7 @@ const ProfileEdit = ({props,newAvatar, onAvatar,onUpdate}) => {
 									{...getRootProps()}
 								>
 									<input {...getInputProps()} />
-									{/* <AddPhotoAlternateIcon color="primary" fontSize="large" /> */}
+								
 									<p>Нажмите на иконку или перетяните ваши изображения</p>
 								</div>
 							</section>
@@ -65,22 +70,21 @@ const ProfileEdit = ({props,newAvatar, onAvatar,onUpdate}) => {
 					</Dropzone>
         </div>
         {thisAvatar ?
-        <div>
-            <button onClick={() => deleteImg()}>X</button>
+        <div className="profile__edit-avatar">
+            
             <img
 			src={`${URL}${thisAvatar.url}`}
 			
 			alt="img"
 		/>
+		
+		<DeleteOutlined style={{fontSize: '25px'}} onClick={() => deleteImg()}/>
         </div>
         : <></>}
-         <Input type='text' placeholder='nick name' value={thisNick} onChange={(e) => setThisNick(e.target.value)}/>
-         <Button onClick={userUpdata}>Change profile</Button>
+         <p> Enter new name: <Input style={{maxWidth: '400px'}} type='text' placeholder='nick name' value={thisNick} onChange={(e) => setThisNick(e.target.value)}/></p>
+         <Button style={{width: '150px', margin: '0 auto'}} onClick={userUpdata}>Change profile</Button>
     </div>
 }
 
-const CProfileEdit = connect(state => ({props: state.promise?.userInfo?.payload, newAvatar: state.promise?.isAvatar?.payload }), 
-                                        {onAvatar: actionUploadAvatar,
-											onUpdate: actionUserUpdate})(ProfileEdit)
 
-export default CProfileEdit
+export default ProfileEdit
